@@ -21,7 +21,9 @@ class Music(models.Model):
         on_delete=models.CASCADE,
         related_name='artist'
     )
-    image = models.ImageField(upload_to='music_images')
+    PATH_TO_USERPICK = 'satanael2.png'
+
+    image = models.ImageField(upload_to='music_images', default=PATH_TO_USERPICK, blank=True)
     genre = models.ForeignKey(to=Genre, blank=True,null=True, on_delete=models.SET_NULL, related_name='genres')
     time_length = models.DecimalField(blank=True, max_digits=20, decimal_places=2)
     music = models.FileField(upload_to='musics', validators=[validate_is_audio])
@@ -38,9 +40,7 @@ class Music(models.Model):
         return reverse('music-detail', kwargs={'pk': self.pk})
 
     def __str__(self) -> str:
-        return f"""
-        artist:{self.artist} 
-        music: {self.title}"""
+        return f'Исполнитель: {self.artist} Музыка: {self.title}'
 
 
 
@@ -58,3 +58,5 @@ class LikeMusic(models.Model):
 
     def __str__(self) -> str:
         return f'Liked by {self.user.username}'
+
+
