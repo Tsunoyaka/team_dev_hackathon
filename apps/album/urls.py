@@ -8,7 +8,9 @@ from .views import AlbumViewSet, MusAlbumVIewSet
 
 router = DefaultRouter()
 router.register('albums', AlbumViewSet, 'alb')
-router.register('musalbums', MusAlbumVIewSet, 'malb')
+router.register('mus-albums', MusAlbumVIewSet, 'malb')
+# router.register('add-albums', )
+
 
 urlpatterns = [
 

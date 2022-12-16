@@ -6,16 +6,12 @@ from .models import Album, MusAlbum, AddAlbum
 class AddAlbumSerializer(serializers.ModelSerializer):
     album = serializers.StringRelatedField(source='album.album')
     image = serializers.StringRelatedField(source='album.image')
-    slug = serializers.StringRelatedField(source='album.slug')
+    add_slug = serializers.StringRelatedField(source='album.slug')
     album_creator = serializers.StringRelatedField(source='album.user')
-    # image = serializers.StringRelatedField(source='musics.image')
-    # time_length = serializers.StringRelatedField(source='musics.time_length')
-    # genre = serializers.StringRelatedField(source='musics.genre')
 
     class Meta:
         model = AddAlbum
         fields = '__all__'
-
 
 
 class AlbumSerializer(serializers.ModelSerializer):
@@ -24,6 +20,7 @@ class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Album
         fields = '__all__'
+
 
 class AlbumDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,10 +35,10 @@ class AlbumDetailSerializer(serializers.ModelSerializer):
             for i in music:
                 obj = {
                 'id': i['id'],
-                'musics': 'http://127.0.0.1:8000/media/' + i['musics'],
+                'musics': '/media/' + i['musics'],
                 'title': i['title'],
                 'artist': i['artist'],
-                'image': 'http://127.0.0.1:8000/media/' + i['image'],
+                'image': '/media/' + i['image'],
                 'genre': i['genre'],
                 'time_length': i['time_length']
                 }

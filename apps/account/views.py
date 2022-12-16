@@ -13,7 +13,8 @@ from .serializers import (
     PasswordChangeSerializer,
     RestorePasswordSerializer,
     SetRestoredPasswordSerializer,
-    UsersSerializer
+    UsersSerializer,
+    ArtistRegistrationSerializer
     )
 
 
@@ -59,9 +60,9 @@ class UserRegistrationView(APIView):
             )
 
 class ArtistRegistrationView(APIView):
-    @swagger_auto_schema(request_body=UserRegistrationSerializer)
+    @swagger_auto_schema(request_body=ArtistRegistrationSerializer)
     def post(self, request: Request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = ArtistRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
@@ -82,7 +83,7 @@ class AccountActivationView(APIView):
         user.activation_code = ''
         user.save()
         return Response(
-            'Учетная запись активирована! Теперь Вы можете войти на Booking.com', 
+            'Учетная запись активирована! Теперь Вы можете войти на сайт и пройти логин.', 
             status=status.HTTP_200_OK
             )
 

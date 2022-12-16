@@ -33,14 +33,17 @@ class AlbumViewSet(ModelViewSet):
         album = Album.objects.filter(user=request.user)
         add_album = AddAlbum.objects.filter(user=request.user)
         add_serializers = AddAlbumSerializer(add_album, many=True).data
+        list_= []
+        for image in add_serializers:
+            image['image'] = f"/media/{image['image']}"
+            list_.append(image)
         serializers = AlbumSerializer(album, many=True).data
         if serializers:
-            return Response(data=[serializers, add_serializers])
+            return Response(data=[serializers, list_])
         return Response('У вас нет альбомов')
 
 
 
-
 class MusAlbumVIewSet(ModelViewSet):
-    queryset = AddAlbum.objects.all()
-    serializer_class = AddAlbumSerializer
+    queryset = MusAlbum.objects.all()
+    serializer_class = MusAlbumSerializer

@@ -61,7 +61,7 @@ class ArtistRegistrationSerializer(serializers.ModelSerializer):
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                'Email already in use'
+                'Данная почта уже используется'
             )
         return email
 

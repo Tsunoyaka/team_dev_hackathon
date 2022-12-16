@@ -50,7 +50,7 @@ class LikeMusic(models.Model):
         on_delete=models.CASCADE,
         related_name='music_likes'
     )
-    like_album = models.ForeignKey(
+    like_music = models.ForeignKey(
         to=Music,
         on_delete=models.CASCADE,
         related_name='music_likes'
