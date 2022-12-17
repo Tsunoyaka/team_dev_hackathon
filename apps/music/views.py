@@ -78,7 +78,7 @@ class GenreViewSet(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         if self.action in ['create']:
-            self.permission_classes = [IsAuthenticated, IsAdminUser]
+            self.permission_classes = [IsAdminUser]
         if self.action in ['destroy', 'update', 'partial_update']:
-            self.permission_classes = [IsOwner, IsAdminUser]
+            self.permission_classes = [IsAdminUser]
         return super().get_permissions()

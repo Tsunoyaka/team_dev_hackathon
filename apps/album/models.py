@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from decouple import config
 
 from apps.music.models import Music
 from apps.music.utils import get_time
@@ -16,9 +17,8 @@ class Album(models.Model):
         on_delete=models.CASCADE,
         related_name='album'
     )
-    PATH_TO_USERPICK = 'satanael2.png'
     album = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='album_images', default=PATH_TO_USERPICK, blank=True)
+    image = models.ImageField(upload_to='album_images', default=config('DEFOULT_ALBUM_IMG'), blank=True)
     slug = models.SlugField(max_length=400, primary_key=True, blank=True)
 
     def save(self,*args, **kwargs):

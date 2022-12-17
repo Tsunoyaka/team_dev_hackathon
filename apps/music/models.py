@@ -3,6 +3,7 @@ from slugify import slugify
 from django.contrib.auth import get_user_model
 from .utils import get_time, get_audio_length, validate_is_audio
 from django.urls import reverse
+from decouple import config
 
 User = get_user_model()
 
@@ -21,9 +22,7 @@ class Music(models.Model):
         on_delete=models.CASCADE,
         related_name='artist'
     )
-    PATH_TO_USERPICK = 'satanael2.png'
-
-    image = models.ImageField(upload_to='music_images', default=PATH_TO_USERPICK, blank=True)
+    image = models.ImageField(upload_to='music_images', default=config('DEFOULT_MUSIC_IMG'), blank=True)
     genre = models.ForeignKey(to=Genre, blank=True,null=True, on_delete=models.SET_NULL, related_name='genres')
     time_length = models.DecimalField(blank=True, max_digits=20, decimal_places=2)
     music = models.FileField(upload_to='musics', validators=[validate_is_audio])
@@ -58,5 +57,3 @@ class LikeMusic(models.Model):
 
     def __str__(self) -> str:
         return f'Liked by {self.user.username}'
-
-

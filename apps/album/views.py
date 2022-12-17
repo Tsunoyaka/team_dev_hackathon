@@ -1,10 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
-
-from .serializers import MusAlbumSerializer, AlbumSerializer, AlbumDetailSerializer, AddAlbumSerializer
-from .models import Album, MusAlbum, AddAlbum
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+
+from .serializers import MusAlbumSerializer, AlbumSerializer, AlbumDetailSerializer, AddAlbumSerializer
+from .models import Album, MusAlbum, AddAlbum
+from .permissions import IsOwner
 
 class AlbumViewSet(ModelViewSet):
     queryset = Album.objects.all()
@@ -17,16 +18,16 @@ class AlbumViewSet(ModelViewSet):
             return AlbumDetailSerializer
         return super().get_serializer_class() 
 
-    # def get_permissions(self):
-    #     if self.action in ['list', 'retrieve']:
-    #         self.permission_classes = [AllowAny]
-    #     if self.action == 'my_albums' and self.request.method == 'GET':
-    #         self.permission_classes = [IsAdminUser]
-    #     # if self.action in ['create', 'comment', 'set_rating', 'like']:
-    #     #     self.permission_classes = [IsAuthenticated]
-    #     # if self.action in ['destroy', 'update', 'partial_update']:
-    #     #     self.permission_classes = [IsOwner]
-    #     return super().get_permissions()
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        if self.action == 'my_albums' and self.request.method == 'GET':
+            self.permission_classes = [IsAdminUser, IsAuthenticated]
+        if self.action in ['create']:
+            self.permission_classes = [IsAuthenticated, IsAdminUser]
+        if self.action in ['destroy', 'update', 'partial_update']:
+            self.permission_classes = [IsOwner, IsAdminUser]
+        return super().get_permissions()
 
     @action(methods=["GET"], detail=False, url_path='my-albums')
     def my_albums(self, request):
@@ -47,3 +48,12 @@ class AlbumViewSet(ModelViewSet):
 class MusAlbumVIewSet(ModelViewSet):
     queryset = MusAlbum.objects.all()
     serializer_class = MusAlbumSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        if self.action in ['create']:
+            self.permission_classes = [IsAuthenticated, IsAdminUser]
+        if self.action in ['destroy', 'update', 'partial_update']:
+            self.permission_classes = [IsOwner, IsAdminUser]
+        return super().get_permissions()
