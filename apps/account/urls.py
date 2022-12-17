@@ -10,7 +10,8 @@ from .views import (
     ListUsersView, 
     UserView, 
     ArtistActivationView, 
-    ArtistRegistrationView
+    ArtistRegistrationView,
+    UpdateAccountView
     )
 
 from rest_framework_simplejwt.views import (
@@ -33,8 +34,9 @@ urlpatterns = [
     path('restore-password/',  RestorePasswordView.as_view(), name='restored_password'),
     path('set-restored-password/', SetRestoredPasswordView.as_view(), name='set_restored_password'),
     path('delete-account/', DeleteAccountView.as_view(), name='delete-account'),
-    path('user/<str:pk>/', UserView.as_view()),
+    path('user/<str:email>/', UserView.as_view()),
     path('users/', ListUsersView.as_view()),
+    path('update/<str:email>/', UpdateAccountView.as_view()),
 ]
 
 if settings.DEBUG:

@@ -61,7 +61,7 @@ class ArtistRegistrationSerializer(serializers.ModelSerializer):
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                'Email already in use'
+                'Данная почта уже используется'
             )
         return email
 
@@ -160,3 +160,26 @@ class SetRestoredPasswordSerializer(serializers.Serializer):
         user.save()
 
 
+class UpdateAccountSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(
+        default=serializers.CurrentUserDefault(),
+        source='user.username'
+    )
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        attrs['user'] = user
+        return attrs
+
+    class Meta:
+        model = User
+        fields = ['user','username', 'image']
+
+    def update(self, instance: User, validated_data):
+        if instance.username == validated_data['user'].username:
+            instance.username = validated_data.get('username', instance.username) 
+            instance.image = validated_data.get('image', instance.image)
+            instance.save()
+        else:
+            raise serializers.ValidationError('Вы не можете совершить это действие!')
+            

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils.crypto import get_random_string
-
+from decouple import config
 
 class UserManager(BaseUserManager):
     def _create(self, username, email, password, **extra_fields):
@@ -30,11 +30,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    PATH_TO_USERPICK = 'satanael2.png'
-
     username = models.CharField('Username', max_length=50)
     email = models.EmailField('Email', max_length=255, primary_key=True)
-    image = models.ImageField(upload_to='user_images', default=PATH_TO_USERPICK, blank=True)
+    image = models.ImageField(upload_to='user_images', default=config('DEFOULT_USER_IMG'), blank=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_artist = models.BooleanField(default=False)

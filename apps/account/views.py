@@ -1,19 +1,22 @@
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView
 from django.contrib.auth import get_user_model
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
+
 
 from .serializers import (
     UserRegistrationSerializer, 
     PasswordChangeSerializer,
     RestorePasswordSerializer,
     SetRestoredPasswordSerializer,
-    UsersSerializer
+    UsersSerializer,
+    ArtistRegistrationSerializer,
+    UpdateAccountSerializer
     )
 
 
@@ -23,9 +26,9 @@ User = get_user_model()
 
 
 class UserView(APIView):
-    def get(self, request, pk):
+    def get(self, request, email):
             try:
-                user = User.objects.get(email=pk)
+                user = User.objects.get(email=email)
             except:
                 return Response('Пользователя под таким первичным ключём не существует.',
                 status=status.HTTP_404_NOT_FOUND)
@@ -59,9 +62,9 @@ class UserRegistrationView(APIView):
             )
 
 class ArtistRegistrationView(APIView):
-    @swagger_auto_schema(request_body=UserRegistrationSerializer)
+    @swagger_auto_schema(request_body=ArtistRegistrationSerializer)
     def post(self, request: Request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = ArtistRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
@@ -82,7 +85,7 @@ class AccountActivationView(APIView):
         user.activation_code = ''
         user.save()
         return Response(
-            'Учетная запись активирована! Теперь Вы можете войти на Booking.com', 
+            'Учетная запись активирована! Теперь Вы можете войти на сайт и пройти логин.', 
             status=status.HTTP_200_OK
             )
 
@@ -136,6 +139,24 @@ class SetRestoredPasswordView(APIView):
                 'Ваш пароль успешно восстановлен.',
                 status=status.HTTP_200_OK
             )
+
+
+class UpdateAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, email):
+        try:
+            obj = User.objects.get(email=email)
+        except:
+            return Response('Пользователь с таким первичным ключем отсутствует.',
+            status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = UpdateAccountSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid(raise_exception=True):
+            serializer.update(obj, serializer.validated_data)
+            answer = {"status": "UPDATE" }
+            answer.update(serializer.data)
+            return Response(answer)
 
 
 class DeleteAccountView(APIView):

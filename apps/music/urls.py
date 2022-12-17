@@ -10,8 +10,9 @@ router = DefaultRouter()
 router.register('note', MusicViewSet, 'music')
 router.register('genre', GenreViewSet, 'genre')
 
-urlpatterns = [
 
+urlpatterns = [
+    # path('my-like/', LikeListView.as_view())
 ]
 
 
