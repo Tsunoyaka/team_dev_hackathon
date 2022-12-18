@@ -10,7 +10,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class MusicSerializer(serializers.ModelSerializer):
-    artist = serializers.StringRelatedField(source='artist.username')
+    user = serializers.StringRelatedField(source='user.username')
 
     class Meta:
         model = Music
@@ -18,9 +18,9 @@ class MusicSerializer(serializers.ModelSerializer):
 
 
 class MusicCreateSerializer(serializers.ModelSerializer):
-    artist = serializers.ReadOnlyField(
+    user = serializers.ReadOnlyField(
         default=serializers.CurrentUserDefault(),
-        source='artist.username'
+        source='user.username'
     )
 
     class Meta:
@@ -29,8 +29,8 @@ class MusicCreateSerializer(serializers.ModelSerializer):
 
 
     def validate(self, attrs):
-        artist = self.context['request'].user
-        attrs['artist'] = artist
+        user = self.context['request'].user
+        attrs['user'] = user
         return attrs
 
 class CurrentMusicDefault:

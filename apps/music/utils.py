@@ -38,7 +38,7 @@ def validate_is_audio(file):
             raise TypeError()
 
         first_file_check=True
-        
+    
     except Exception as e:
         first_file_check=False
     
