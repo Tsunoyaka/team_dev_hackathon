@@ -4,8 +4,6 @@ from django_filters import rest_framework as rest_filter
 from rest_framework import filters, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
 
 from .permissions import IsOwner
 from .serializers import MusicCreateSerializer, MusicSerializer, GenreSerializer, LikeMusicSerializer, LikeSerializer
@@ -21,7 +19,7 @@ class MusicViewSet(ModelViewSet):
     filter_backends = [
         filters.SearchFilter, 
         rest_filter.DjangoFilterBackend]
-    search_fields = ['title','artist__username']
+    search_fields = ['title','user__username', 'genre']
     filterset_fields = ['genre']
 
     def get_serializer_class(self):

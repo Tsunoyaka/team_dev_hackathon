@@ -27,13 +27,14 @@ class Album(models.Model):
         super().save(*args, **kwargs)
 
 class MusAlbum(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='album_music'
+    )
     musics = models.ForeignKey(to=Music, related_name='album_music', on_delete=models.CASCADE)
     album = models.ForeignKey(to=Album, related_name='album_music', on_delete=models.CASCADE)
 
-
-    def save(self,*args, **kwargs):
-        self.image = self.musics
-        super().save(*args, **kwargs)
 
 
 

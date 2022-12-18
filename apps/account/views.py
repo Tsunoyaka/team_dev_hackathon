@@ -1,5 +1,4 @@
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, UpdateAPIView
 from django.contrib.auth import get_user_model
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -34,7 +33,7 @@ class UserView(APIView):
                 status=status.HTTP_404_NOT_FOUND)
             serializer = UsersSerializer(instance=user)
             # # usernames = [user.username for user in User.objects.all()]
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ListUsersView(APIView):
     def get(self, request):
@@ -144,7 +143,7 @@ class SetRestoredPasswordView(APIView):
 class UpdateAccountView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def put(self, request, email):
+    def patch(self, request, email):
         try:
             obj = User.objects.get(email=email)
         except:
@@ -155,8 +154,9 @@ class UpdateAccountView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.update(obj, serializer.validated_data)
             answer = {"status": "UPDATE" }
-            answer.update(serializer.data)
+            answer.update(serializer.data, status=status.HTTP_200_OK)
             return Response(answer)
+
 
 
 class DeleteAccountView(APIView):

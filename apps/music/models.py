@@ -17,7 +17,7 @@ class Genre(models.Model):
 class Music(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=400, primary_key=True, blank=True)
-    artist = models.ForeignKey(
+    user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         related_name='artist'
@@ -39,7 +39,7 @@ class Music(models.Model):
         return reverse('music-detail', kwargs={'pk': self.pk})
 
     def __str__(self) -> str:
-        return f'Исполнитель: {self.artist} Музыка: {self.title}'
+        return f'Исполнитель: {self.user} Музыка: {self.title}'
 
 
 
