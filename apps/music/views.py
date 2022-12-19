@@ -4,9 +4,16 @@ from django_filters import rest_framework as rest_filter
 from rest_framework import filters, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.generics import ListAPIView
 
 from .permissions import IsOwner
-from .serializers import MusicCreateSerializer, MusicSerializer, GenreSerializer, LikeMusicSerializer, LikeSerializer
+from .serializers import (
+    MusicCreateSerializer, 
+    MusicSerializer, 
+    GenreSerializer, 
+    LikeMusicSerializer, 
+    LikeSerializer
+    )
 from .models import Music, Genre, LikeMusic
 
 from django.contrib.auth import get_user_model
@@ -19,7 +26,7 @@ class MusicViewSet(ModelViewSet):
     filter_backends = [
         filters.SearchFilter, 
         rest_filter.DjangoFilterBackend]
-    search_fields = ['title','user__username', 'genre']
+    search_fields = ['title','user__username', 'genre__genre']
     filterset_fields = ['genre']
 
     def get_serializer_class(self):
@@ -52,10 +59,10 @@ class MusicViewSet(ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             if request.method == 'POST':
                 serializer.save(user=request.user)
-                return Response('Liked!')
+                return Response('Liked!', status=status.HTTP_201_CREATED)
             elif request.method == 'DELETE':
                 serializer.unlike()
-                return Response('Unliked!')
+                return Response('Unliked!', status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=["GET"], detail=False, url_path='my-like')
     def my_like(self, request):
@@ -66,8 +73,19 @@ class MusicViewSet(ModelViewSet):
             i['image'] = f"/media/{i['image']}"
             i['music'] = f"/media/{i['music']}"
             list_.append(i)
-        return Response(data=list_)
-    
+        return Response(data=list_, status=status.HTTP_200_OK)
+
+
+class ArtistView(ListAPIView):
+    queryset = Music.objects.filter(user__is_artist=True)
+    serializer_class = MusicSerializer
+    filter_backends = [
+        filters.SearchFilter, 
+        rest_filter.DjangoFilterBackend]
+    search_fields = ['title','user__username', 'genre__genre']
+    filterset_fields = ['genre']
+
+
 class GenreViewSet(ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
