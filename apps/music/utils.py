@@ -30,7 +30,6 @@ def get_audio_length(file):
    
 
 def validate_is_audio(file):
-
     try:
         audio = MP3(file)
 

@@ -3,10 +3,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
-from .serializers import MusAlbumSerializer, AlbumSerializer, AlbumDetailSerializer, AddAlbumSerializer
+from .serializers import (
+    MusAlbumSerializer, 
+    AlbumSerializer, 
+    AlbumDetailSerializer, 
+    AddAlbumSerializer
+    )
 from .models import Album, MusAlbum, AddAlbum
 from .permissions import IsOwner
-from rest_framework import filters
+from rest_framework import filters, status
 
 class AlbumViewSet(ModelViewSet):
     queryset = Album.objects.all()
@@ -42,8 +47,8 @@ class AlbumViewSet(ModelViewSet):
             list_.append(image)
         serializers = AlbumSerializer(album, many=True).data
         if serializers or list_:
-            return Response(data=[serializers, list_])
-        return Response('У вас нет альбомов')
+            return Response(data=[serializers, list_], status=status.HTTP_200_OK)
+        return Response('У вас нет альбомов', status=status.HTTP_204_NO_CONTENT)
 
 
 
