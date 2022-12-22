@@ -44,9 +44,9 @@ class MusicViewSet(ModelViewSet):
         if self.action == 'like' and self.request.method == 'POST' or self.request.method == 'DELETE':
             self.permission_classes = [IsAuthenticated]
         if self.action in ['create']:
-            self.permission_classes = [IsAuthenticated, IsAdminUser]
+            self.permission_classes = [IsAuthenticated]
         if self.action in ['destroy', 'update', 'partial_update']:
-            self.permission_classes = [IsOwner, IsAdminUser]
+            self.permission_classes = [IsOwner]
         return super().get_permissions()
 
     @action(detail=True, methods=['POST', 'DELETE'])

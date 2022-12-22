@@ -20,7 +20,7 @@ def email_validator(email):
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email')  
+        fields = ('username', 'email', 'image')  
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
