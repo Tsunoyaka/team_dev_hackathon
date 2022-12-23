@@ -1,44 +1,16 @@
 from rest_framework import serializers
 
-from .models import Album, MusAlbum, AddAlbum
+from .models import Playlist, MusPlaylist
 
 
-class AddAlbumSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(
-        default=serializers.CurrentUserDefault(),
-        source='user.username'
-    )
-
-    add_album = serializers.StringRelatedField(source='album.album')
-    image = serializers.StringRelatedField(source='album.image')
-
-    class Meta:
-        model = AddAlbum
-        fields = '__all__'
-
-    def validate_album(self, album):
-        user = self.context['request'].user
-        slug = str(album).split('object')[1].strip(' ').strip('()')
-        model = AddAlbum.objects.filter(user=user,album=album)
-        model_album = Album.objects.filter(user=user, slug=slug)
-        if model or model_album:
-            raise serializers.ValidationError('У вас уже есть этот альбом!')
-        return album
-
-    def validate(self, attrs):
-        user = self.context['request'].user
-        attrs['user'] = user
-        return attrs
-
-
-class AlbumSerializer(serializers.ModelSerializer):
+class PlaylistSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(
         default=serializers.CurrentUserDefault(),
         source='user.username'
     )
 
     class Meta:
-        model = Album
+        model = Playlist
         fields = '__all__'
 
     def validate(self, attrs):
@@ -46,14 +18,16 @@ class AlbumSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         return attrs
 
-class AlbumDetailSerializer(serializers.ModelSerializer):
+
+
+class PlaylistDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Album
+        model = Playlist
         fields = '__all__'
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        music = MusAlbumSerializer(instance.album_music.all(), many=True).data
+        music = MusPlaylistSerializer(instance.playlist_music.all(), many=True).data
         music_list = []
         if music:
             for i in music:
@@ -71,7 +45,7 @@ class AlbumDetailSerializer(serializers.ModelSerializer):
         return representation
 
 
-class MusAlbumSerializer(serializers.ModelSerializer):
+class MusPlaylistSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(
         default=serializers.CurrentUserDefault(),
         source='user.username'
@@ -85,13 +59,13 @@ class MusAlbumSerializer(serializers.ModelSerializer):
     genre = serializers.StringRelatedField(source='musics.genre')
 
     def validate_musics(self, musics):
-        album = self.context['request'].data['album']
-        model = MusAlbum.objects.filter(musics=musics, album=album)
+        playlist = self.context['request'].data['playlist']
+        model = MusPlaylist.objects.filter(musics=musics, playlist=playlist)
         if model:
-            raise serializers.ValidationError('Эта музыка уже есть в альбоме!')
+            raise serializers.ValidationError('Эта музыка уже есть в плейлисте!')
         return super().validate(musics)
 
     class Meta:
-        model = MusAlbum
+        model = MusPlaylist
         fields = '__all__'
 
