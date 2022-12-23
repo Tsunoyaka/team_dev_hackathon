@@ -40,7 +40,8 @@ class ListUsersView(APIView):
         for user in usernames:
            B = {
             'user': user.username,
-            'email': user.email 
+            'email': user.email,
+            'image': f'http://127.0.0.1:8000/{user.image}'
            }
            list_.append(B)
         return Response(list_)

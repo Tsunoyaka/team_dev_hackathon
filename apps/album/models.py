@@ -10,7 +10,6 @@ from slugify import slugify
 User = get_user_model()
 
 
-
 class Album(models.Model):
     user = models.ForeignKey(
         to=User,
@@ -34,8 +33,6 @@ class MusAlbum(models.Model):
     )
     musics = models.ForeignKey(to=Music, related_name='album_music', on_delete=models.CASCADE)
     album = models.ForeignKey(to=Album, related_name='album_music', on_delete=models.CASCADE)
-
-
 
 
 class LikeAlbum(models.Model):

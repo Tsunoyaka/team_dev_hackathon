@@ -40,7 +40,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('apps.account.urls')),
     path('music/', include('apps.music.urls')),
-    path('album/', include('apps.album.urls'))
+    path('album/', include('apps.album.urls')),
+    path('playlist/', include('apps.playlist.urls'))
 
 ]
 
